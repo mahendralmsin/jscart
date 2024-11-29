@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h1 id="productName"></h1>
+            <button class="btn btn-danger" onclick="logOut()">Log Out</button>
+        </div>
+
+        <div id="singleProduct"></div>
+    </div>
+    <script>
+
+        // fetch data from URL
+            let url = window.location.href;
+            console.log('URL String', url);
+            let urlParams = new URL(url);
+            console.log('URL Object', urlParams);
+            let idParam = urlParams.searchParams.get('id');
+            console.log('URL ? mark ke bad ki value throgh key', idParam);
+            singleProduct(idParam);
+
+        // single product data
+            async function singleProduct(id) {
+                try {
+                    let response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
+                    let data = await response.json();
+                    console.log(data);
+                    let singleProduct = document.getElementById('singleProduct');
+                    let card = `
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <b>ID: ${data.id}</b>
+                            <h5 class="card-title">${data.title}</h5>
+                            <p class="card-text">${data.body}</p>
+                        </div>
+                    </div>`;
+                    console.log(data);
+                    singleProduct.innerHTML += card;
+                    // for show title
+                    document.getElementById('productName').innerHTML = data.title;
+
+                }
+                catch (error) {
+                    console.log(error);
+                }
+            }
+
+            // logout function
+            function logOut() {
+                window.location.href = 'index.html';
+                localStorage.setItem('isLoggedIn', 'false');
+            }
+
+            // check user is logged-in or not
+            function checkLogin() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+                if (isLoggedIn !== 'true') {
+                    window.location.href = 'index.html';  // Redirect to login page
+                }
+            }
+            checkLogin();
+            
+    </script>
+</body>
+
+</html>
